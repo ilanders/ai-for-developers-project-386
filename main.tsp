@@ -27,7 +27,6 @@ model Slot {
 model GuestContact {
   name: string;
   email: string;
-  notes?: string;
 }
 
 model Booking {
@@ -42,9 +41,15 @@ model Booking {
 // ===== Request Bodies =====
 
 model CreateEventTypeRequest {
+  id: string;
   title: string;
   description: string;
   durationMinutes: int32;
+}
+
+model Created<T> {
+  @statusCode statusCode: 201;
+  @body body: T;
 }
 
 model CreateBookingRequest {
@@ -85,11 +90,11 @@ model ValidationError {
 interface Admin {
   @get
   @route("/owner")
-  getOwner(): Owner | NotFoundError;
+  getOwner(): Owner;
 
   @post
   @route("/event-types")
-  createEventType(@body body: CreateEventTypeRequest): EventType | ValidationError;
+  createEventType(@body body: CreateEventTypeRequest): Created<EventType> | ConflictError | ValidationError;
 
   @get
   @route("/event-types")
@@ -110,9 +115,9 @@ interface Public {
 
   @get
   @route("/event-types/{eventTypeId}/slots")
-  getFreeSlots(eventTypeId: string): Slot[] | ValidationError;
+  getFreeSlots(@path eventTypeId: string): Slot[] | NotFoundError;
 
   @post
   @route("/bookings")
-  createBooking(@body body: CreateBookingRequest): Booking | ConflictError | ValidationError;
+  createBooking(@body body: CreateBookingRequest): Created<Booking> | NotFoundError | ConflictError | ValidationError;
 }
