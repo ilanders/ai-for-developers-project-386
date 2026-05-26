@@ -1,8 +1,14 @@
 {
+  "scripts": {
+    "compile": "tsp compile main.tsp",
+    "generate:types": "openapi-typescript tsp-output/@typespec/openapi3/openapi.yaml -o frontend/src/types/api.ts",
+    "generate": "npm run compile && npm run generate:types"
+  },
   "devDependencies": {
     "@typespec/compiler": "^1.12.0",
     "@typespec/http": "^1.12.0",
     "@typespec/openapi3": "^1.12.0",
-    "@typespec/rest": "^0.82.0"
+    "@typespec/rest": "^0.82.0",
+    "openapi-typescript": "^7.6.0"
   }
 }
