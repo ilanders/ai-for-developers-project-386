@@ -1,0 +1,6 @@
+ktor:
+  deployment:
+    port: 4010
+  application:
+    modules:
+      - com.booking.RoutingKt.configureRouting
