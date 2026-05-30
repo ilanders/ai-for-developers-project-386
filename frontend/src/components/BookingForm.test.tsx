@@ -52,6 +52,19 @@ describe('BookingForm', () => {
     expect(onSuccess).toHaveBeenCalled()
   })
 
+  it('показывает generic error при не-ApiError', async () => {
+    vi.mocked(createBooking).mockRejectedValue(new Error('Network failure'))
+
+    render(<BookingForm eventTypeId="t1" slot={slot} onSuccess={() => {}} />)
+    const user = userEvent.setup()
+
+    await user.type(screen.getByRole('textbox', { name: /Name/ }), 'Alice')
+    await user.type(screen.getByRole('textbox', { name: /Email/ }), 'alice@test.com')
+    await user.click(screen.getByRole('button', { name: /confirm booking/i }))
+
+    expect(await screen.findByText('Failed to create booking')).toBeInTheDocument()
+  })
+
   it('показывает ошибку при ApiError', async () => {
     vi.mocked(createBooking).mockRejectedValue(
       new ApiError(409, { message: 'Slot already booked' }),

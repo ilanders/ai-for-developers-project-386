@@ -41,6 +41,13 @@ describe('BookingsPage', () => {
     expect(await screen.findByText('alice@test.com')).toBeInTheDocument()
   })
 
+  it('показывает generic error при не-ApiError', async () => {
+    vi.mocked(listBookings).mockRejectedValue(new Error('Network failure'))
+
+    render(<BookingsPage />)
+    expect(await screen.findByText('Failed to load bookings')).toBeInTheDocument()
+  })
+
   it('показывает ошибку при ApiError', async () => {
     vi.mocked(listBookings).mockRejectedValue(
       new ApiError(500, { message: 'Failed to load bookings' }),

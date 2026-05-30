@@ -62,6 +62,13 @@ describe('HomePage', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/book/intro')
   })
 
+  it('показывает generic error при не-ApiError', async () => {
+    vi.mocked(listPublicEventTypes).mockRejectedValue(new Error('Network failure'))
+
+    renderPage()
+    expect(await screen.findByText('Failed to load event types')).toBeInTheDocument()
+  })
+
   it('показывает ошибку при ApiError', async () => {
     vi.mocked(listPublicEventTypes).mockRejectedValue(
       new ApiError(500, { message: 'Server error' }),

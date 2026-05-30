@@ -53,6 +53,13 @@ describe('EventTypesPage', () => {
     expect(listEventTypes).toHaveBeenCalled()
   })
 
+  it('показывает generic error при не-ApiError', async () => {
+    vi.mocked(listEventTypes).mockRejectedValue(new Error('Network failure'))
+
+    render(<EventTypesPage />)
+    expect(await screen.findByText('Failed to load event types')).toBeInTheDocument()
+  })
+
   it('показывает ошибку при ApiError', async () => {
     vi.mocked(listEventTypes).mockRejectedValue(
       new ApiError(500, { message: 'Failed to load' }),

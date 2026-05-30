@@ -78,6 +78,24 @@ describe('BookingPage', () => {
     expect(await screen.findByText('Booking confirmed!')).toBeInTheDocument()
   })
 
+  it('показывает ошибку 409 Conflict при бронировании занятого слота', async () => {
+    vi.mocked(getFreeSlots).mockResolvedValue(slots)
+    vi.mocked(createBooking).mockRejectedValue(
+      new ApiError(409, { message: 'Slot already booked' }),
+    )
+
+    renderPage()
+
+    const user = userEvent.setup()
+    const buttons = await screen.findAllByRole('button')
+    await user.click(buttons[0])
+    await user.type(screen.getByRole('textbox', { name: /Name/ }), 'Alice')
+    await user.type(screen.getByRole('textbox', { name: /Email/ }), 'alice@test.com')
+    await user.click(screen.getByRole('button', { name: /confirm booking/i }))
+
+    expect(await screen.findByText('Slot already booked')).toBeInTheDocument()
+  })
+
   it('показывает empty state если нет слотов', async () => {
     vi.mocked(getFreeSlots).mockResolvedValue([])
     renderPage()

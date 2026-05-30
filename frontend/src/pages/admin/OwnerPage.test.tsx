@@ -38,6 +38,13 @@ describe('OwnerPage', () => {
     expect(await screen.findByText('Europe/Moscow')).toBeInTheDocument()
   })
 
+  it('показывает generic error при не-ApiError', async () => {
+    vi.mocked(getOwner).mockRejectedValue(new Error('Network failure'))
+
+    render(<OwnerPage />)
+    expect(await screen.findByText('Failed to load owner')).toBeInTheDocument()
+  })
+
   it('показывает ошибку при ApiError', async () => {
     vi.mocked(getOwner).mockRejectedValue(
       new ApiError(404, { message: 'Owner not found' }),
