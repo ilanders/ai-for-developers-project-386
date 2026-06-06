@@ -6,8 +6,8 @@ vi.mock('../../api/client', () => ({
   listBookings: vi.fn(),
   ApiError: class ApiError extends Error {
     status: number
-    body: { message: string }
-    constructor(status: number, body: { message: string }) {
+    body: { code: string; message: string }
+    constructor(status: number, body: { code: string; message: string }) {
       super(body.message)
       this.status = status
       this.body = body
@@ -32,6 +32,7 @@ describe('BookingsPage', () => {
         startTime: '2026-06-01T10:00:00Z',
         endTime: '2026-06-01T10:30:00Z',
         guest: { name: 'Alice', email: 'alice@test.com' },
+        createdAt: '2026-06-01T10:30:00Z',
       },
     ])
 
@@ -50,7 +51,7 @@ describe('BookingsPage', () => {
 
   it('показывает ошибку при ApiError', async () => {
     vi.mocked(listBookings).mockRejectedValue(
-      new ApiError(500, { message: 'Failed to load bookings' }),
+      new ApiError(500, { code: 'VALIDATION_ERROR', message: 'Failed to load bookings' }),
     )
 
     render(<BookingsPage />)

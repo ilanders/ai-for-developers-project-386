@@ -6,8 +6,8 @@ vi.mock('../../api/client', () => ({
   getOwner: vi.fn(),
   ApiError: class ApiError extends Error {
     status: number
-    body: { message: string }
-    constructor(status: number, body: { message: string }) {
+    body: { code: string; message: string }
+    constructor(status: number, body: { code: string; message: string }) {
       super(body.message)
       this.status = status
       this.body = body
@@ -47,7 +47,7 @@ describe('OwnerPage', () => {
 
   it('показывает ошибку при ApiError', async () => {
     vi.mocked(getOwner).mockRejectedValue(
-      new ApiError(404, { message: 'Owner not found' }),
+      new ApiError(404, { code: 'NOT_FOUND', message: 'Owner not found' }),
     )
 
     render(<OwnerPage />)

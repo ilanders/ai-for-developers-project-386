@@ -8,8 +8,8 @@ vi.mock('../../api/client', () => ({
   createEventType: vi.fn(),
   ApiError: class ApiError extends Error {
     status: number
-    body: { message: string }
-    constructor(status: number, body: { message: string }) {
+    body: { code: string; message: string }
+    constructor(status: number, body: { code: string; message: string }) {
       super(body.message)
       this.status = status
       this.body = body
@@ -62,7 +62,7 @@ describe('EventTypesPage', () => {
 
   it('показывает ошибку при ApiError', async () => {
     vi.mocked(listEventTypes).mockRejectedValue(
-      new ApiError(500, { message: 'Failed to load' }),
+      new ApiError(500, { code: 'VALIDATION_ERROR', message: 'Failed to load' }),
     )
 
     render(<EventTypesPage />)

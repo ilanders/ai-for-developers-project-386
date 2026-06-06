@@ -10,8 +10,8 @@ vi.mock('../api/client', () => ({
   createBooking: vi.fn(),
   ApiError: class ApiError extends Error {
     status: number
-    body: { message: string }
-    constructor(status: number, body: { message: string }) {
+    body: { code: string; message: string }
+    constructor(status: number, body: { code: string; message: string }) {
       super(body.message)
       this.status = status
       this.body = body
@@ -66,7 +66,7 @@ describe('BookingPage', () => {
     vi.mocked(getFreeSlots).mockResolvedValue(slots)
     vi.mocked(createBooking).mockResolvedValue({} as never)
 
-    const { container } = renderPage()
+    renderPage()
 
     const user = userEvent.setup()
     const buttons = await screen.findAllByRole('button')
@@ -81,7 +81,7 @@ describe('BookingPage', () => {
   it('показывает ошибку 409 Conflict при бронировании занятого слота', async () => {
     vi.mocked(getFreeSlots).mockResolvedValue(slots)
     vi.mocked(createBooking).mockRejectedValue(
-      new ApiError(409, { message: 'Slot already booked' }),
+      new ApiError(409, { code: 'CONFLICT', message: 'Slot already booked' }),
     )
 
     renderPage()
@@ -104,7 +104,7 @@ describe('BookingPage', () => {
 
   it('показывает ошибку при ApiError', async () => {
     vi.mocked(getFreeSlots).mockRejectedValue(
-      new ApiError(500, { message: 'Failed to load slots' }),
+      new ApiError(500, { code: 'VALIDATION_ERROR', message: 'Failed to load slots' }),
     )
     renderPage()
     expect(await screen.findByText('Failed to load slots')).toBeInTheDocument()

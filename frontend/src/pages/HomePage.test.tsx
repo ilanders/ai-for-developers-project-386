@@ -16,8 +16,8 @@ vi.mock('../api/client', () => ({
   listPublicEventTypes: vi.fn(),
   ApiError: class ApiError extends Error {
     status: number
-    body: { message: string }
-    constructor(status: number, body: { message: string }) {
+    body: { code: string; message: string }
+    constructor(status: number, body: { code: string; message: string }) {
       super(body.message)
       this.status = status
       this.body = body
@@ -71,7 +71,7 @@ describe('HomePage', () => {
 
   it('показывает ошибку при ApiError', async () => {
     vi.mocked(listPublicEventTypes).mockRejectedValue(
-      new ApiError(500, { message: 'Server error' }),
+      new ApiError(500, { code: 'VALIDATION_ERROR', message: 'Server error' }),
     )
 
     renderPage()

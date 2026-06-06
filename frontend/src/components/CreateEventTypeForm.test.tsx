@@ -7,8 +7,8 @@ vi.mock('../api/client', () => ({
   createEventType: vi.fn(),
   ApiError: class ApiError extends Error {
     status: number
-    body: { message: string }
-    constructor(status: number, body: { message: string }) {
+    body: { code: string; message: string }
+    constructor(status: number, body: { code: string; message: string }) {
       super(body.message)
       this.status = status
       this.body = body
@@ -20,7 +20,7 @@ const { createEventType, ApiError } = await import('../api/client')
 
 describe('CreateEventTypeForm', () => {
   it('рендерит все поля', () => {
-    const { container } = render(<CreateEventTypeForm onSuccess={() => {}} />)
+    render(<CreateEventTypeForm onSuccess={() => {}} />)
     expect(screen.getByRole('textbox', { name: /ID/ })).toBeInTheDocument()
     expect(screen.getByRole('textbox', { name: /Title/ })).toBeInTheDocument()
     expect(screen.getByRole('textbox', { name: /Description/ })).toBeInTheDocument()
@@ -52,7 +52,7 @@ describe('CreateEventTypeForm', () => {
 
   it('показывает ошибку при ApiError', async () => {
     vi.mocked(createEventType).mockRejectedValue(
-      new ApiError(409, { message: 'Event type already exists' }),
+      new ApiError(409, { code: 'CONFLICT', message: 'Event type already exists' }),
     )
 
     render(<CreateEventTypeForm onSuccess={() => {}} />)

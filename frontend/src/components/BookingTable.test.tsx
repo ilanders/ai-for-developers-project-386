@@ -9,6 +9,7 @@ const booking: Booking = {
   startTime: '2026-06-01T10:00:00Z',
   endTime: '2026-06-01T10:30:00Z',
   guest: { name: 'Alice', email: 'alice@test.com' },
+  createdAt: '2026-06-01T10:30:00Z',
 }
 
 describe('BookingTable', () => {

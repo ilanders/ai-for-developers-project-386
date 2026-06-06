@@ -12,7 +12,7 @@ import {
 
 describe('ApiError', () => {
   it('создает ошибку с сообщением, статусом и телом', () => {
-    const body = { message: 'Not found' }
+    const body = { code: 'NOT_FOUND' as const, message: 'Not found' }
     const err = new ApiError(404, body)
     expect(err).toBeInstanceOf(Error)
     expect(err.status).toBe(404)

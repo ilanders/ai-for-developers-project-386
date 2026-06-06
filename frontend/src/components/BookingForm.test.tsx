@@ -13,8 +13,8 @@ vi.mock('../api/client', () => ({
   createBooking: vi.fn(),
   ApiError: class ApiError extends Error {
     status: number
-    body: { message: string }
-    constructor(status: number, body: { message: string }) {
+    body: { code: string; message: string }
+    constructor(status: number, body: { code: string; message: string }) {
       super(body.message)
       this.status = status
       this.body = body
@@ -67,7 +67,7 @@ describe('BookingForm', () => {
 
   it('показывает ошибку при ApiError', async () => {
     vi.mocked(createBooking).mockRejectedValue(
-      new ApiError(409, { message: 'Slot already booked' }),
+      new ApiError(409, { code: 'CONFLICT', message: 'Slot already booked' }),
     )
 
     render(<BookingForm eventTypeId="t1" slot={slot} onSuccess={() => {}} />)
