@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "compile": "tsp compile main.tsp",
+    "compile": "tsp compile main.tsp --emit @typespec/openapi3",
     "generate:types": "openapi-typescript tsp-output/@typespec/openapi3/openapi.yaml -o frontend/src/types/api.ts",
     "generate": "npm run compile && npm run generate:types"
   },
