@@ -3,3 +3,5 @@ node_modules/
 tsp-output/
 backend/build/
 backend/.gradle/
+
+frontend/test-results/
