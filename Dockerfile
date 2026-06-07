@@ -17,7 +17,10 @@ ENV JAVA_TOOL_OPTIONS="-XX:-UsePerfData"
 WORKDIR /app
 COPY --from=spec /app/tsp-output/ tsp-output/
 COPY backend/ backend/
-RUN cd backend && ./gradlew installDist --no-daemon && rm -rf /tmp/hsperfdata_* /root/.kotlin
+RUN printf '\norg.gradle.daemon=false\norg.gradle.vfs.watch=false\nkotlin.compiler.execution.strategy=in-process\nkotlin.incremental=false\n' >> backend/gradle.properties \
+    && cd backend \
+    && ./gradlew installDist --no-daemon --no-watch-fs \
+    && rm -rf /tmp/kotlin-* /tmp/hsperfdata_* /root/.kotlin
 
 FROM eclipse-temurin:21-jre-alpine
 RUN apk add --no-cache nginx gettext
