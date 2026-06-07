@@ -1,11 +1,11 @@
-FROM node:22-alpine AS spec
+FROM node:24-alpine AS spec
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY main.tsp ./
 RUN npm run compile
 
-FROM node:22-alpine AS frontend
+FROM node:24-alpine AS frontend
 WORKDIR /app
 COPY frontend/package*.json frontend/
 RUN cd frontend && npm ci
@@ -13,10 +13,11 @@ COPY frontend/ frontend/
 RUN cd frontend && npx vite build
 
 FROM eclipse-temurin:21-jdk AS backend
+ENV JAVA_TOOL_OPTIONS="-XX:-UsePerfData"
 WORKDIR /app
 COPY --from=spec /app/tsp-output/ tsp-output/
 COPY backend/ backend/
-RUN cd backend && ./gradlew installDist --no-daemon
+RUN cd backend && ./gradlew installDist --no-daemon && rm -rf /tmp/hsperfdata_root
 
 FROM eclipse-temurin:21-jre-alpine
 RUN apk add --no-cache nginx gettext
