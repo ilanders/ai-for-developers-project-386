@@ -20,6 +20,16 @@ fun Route.adminRoutes(
             call.respond(store.owner)
         }
 
+        get("/availability") {
+            call.respond(store.availabilitySettings)
+        }
+
+        put("/availability") {
+            val request = call.receive<AvailabilitySettings>()
+            val settings = store.updateAvailabilitySettings(request)
+            call.respond(settings)
+        }
+
         post("/event-types") {
             val request = call.receive<CreateEventTypeRequest>()
             val eventType = eventTypeService.createEventType(request)

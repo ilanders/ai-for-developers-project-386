@@ -1,9 +1,10 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { AppShell, Group, Title, NavLink, Anchor } from '@mantine/core'
-import { IconUser, IconCalendarEvent, IconCalendarCheck } from '@tabler/icons-react'
+import { IconUser, IconCalendarEvent, IconCalendarCheck, IconClock } from '@tabler/icons-react'
 
 const links = [
   { to: '/admin/owner', label: 'Owner', icon: IconUser },
+  { to: '/admin/availability', label: 'Availability', icon: IconClock },
   { to: '/admin/event-types', label: 'Event Types', icon: IconCalendarEvent },
   { to: '/admin/bookings', label: 'Bookings', icon: IconCalendarCheck },
 ]

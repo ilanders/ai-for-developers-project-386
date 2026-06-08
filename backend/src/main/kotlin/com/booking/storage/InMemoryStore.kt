@@ -11,6 +11,23 @@ class InMemoryStore {
     val eventTypes = mutableMapOf<String, EventType>()
     val bookings = mutableListOf<Booking>()
 
+    @Volatile
+    var availabilitySettings: AvailabilitySettings = defaultAvailabilitySettings()
+        private set
+
+    fun updateAvailabilitySettings(settings: AvailabilitySettings): AvailabilitySettings {
+        synchronized(this) {
+            availabilitySettings = settings
+            return settings
+        }
+    }
+
+    private fun defaultAvailabilitySettings(): AvailabilitySettings = AvailabilitySettings(
+        windows = (1..7).map { WeeklyWindow(dayOfWeek = it, startTime = "00:00", endTime = "23:59") },
+        breaks = emptyList(),
+        overrides = emptyList()
+    )
+
     fun addEventType(eventType: EventType): EventType {
         synchronized(eventTypes) {
             if (eventTypes.containsKey(eventType.id)) {

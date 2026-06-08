@@ -48,6 +48,25 @@ export function getOwner(): Promise<Owner> {
   return request('/api/admin/owner')
 }
 
+export type WeeklyWindow = components['schemas']['WeeklyWindow']
+export type DailyBreak = components['schemas']['DailyBreak']
+export type DateOverride = components['schemas']['DateOverride']
+export type TimeWindow = components['schemas']['TimeWindow']
+export type AvailabilitySettings = components['schemas']['AvailabilitySettings']
+
+export function getAvailability(): Promise<AvailabilitySettings> {
+  return request('/api/admin/availability')
+}
+
+export function updateAvailability(
+  body: AvailabilitySettings,
+): Promise<AvailabilitySettings> {
+  return request('/api/admin/availability', {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  })
+}
+
 export function listEventTypes(): Promise<EventType[]> {
   return request('/api/admin/event-types')
 }

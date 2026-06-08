@@ -38,6 +38,37 @@ model Booking {
   createdAt: utcDateTime;
 }
 
+// ===== Availability Models =====
+
+model TimeWindow {
+  startTime: string;
+  endTime: string;
+}
+
+model WeeklyWindow {
+  dayOfWeek: int32;
+  startTime: string;
+  endTime: string;
+}
+
+model DailyBreak {
+  dayOfWeek: int32;
+  startTime: string;
+  endTime: string;
+}
+
+model DateOverride {
+  date: plainDate;
+  isHoliday: boolean;
+  windows: TimeWindow[];
+}
+
+model AvailabilitySettings {
+  windows: WeeklyWindow[];
+  breaks: DailyBreak[];
+  overrides: DateOverride[];
+}
+
 // ===== Request Bodies =====
 
 model CreateEventTypeRequest {
@@ -91,6 +122,14 @@ interface Admin {
   @get
   @route("/owner")
   getOwner(): Owner;
+
+  @get
+  @route("/availability")
+  getAvailability(): AvailabilitySettings;
+
+  @put
+  @route("/availability")
+  updateAvailability(@body body: AvailabilitySettings): AvailabilitySettings;
 
   @post
   @route("/event-types")
